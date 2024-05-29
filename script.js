@@ -1,4 +1,3 @@
-// Add this at the top of your existing JavaScript code
 document.addEventListener("DOMContentLoaded", () => {
     const themeToggleBtn = document.getElementById("theme-toggle-btn");
     const body = document.body;
@@ -23,10 +22,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 });
-  
 
 const taskInput = document.querySelector(".task-input input"),
       priorityDropdown = document.querySelector(".priority-dropdown"),
+      addTaskBtn = document.getElementById("add-task-btn"),
       filters = document.querySelectorAll(".filters span"),
       clearAll = document.querySelector(".clear-btn"),
       taskBox = document.querySelector(".task-box");
@@ -119,10 +118,10 @@ clearAll.addEventListener("click", () => {
     showTodo();
 });
 
-taskInput.addEventListener("keyup", e => {
+function addTask() {
     let userTask = taskInput.value.trim();
     let taskPriority = priorityDropdown.value;
-    if (e.key === "Enter" && userTask) {
+    if (userTask) {
         if (!isEditTask) {
             todos = !todos ? [] : todos;
             let taskInfo = { name: userTask, status: "pending", priority: taskPriority };
@@ -135,6 +134,14 @@ taskInput.addEventListener("keyup", e => {
         taskInput.value = "";
         localStorage.setItem("todo-list", JSON.stringify(todos));
         showTodo();
+    }
+}
+
+addTaskBtn.addEventListener("click", addTask);
+
+taskInput.addEventListener("keyup", e => {
+    if (e.key === "Enter") {
+        addTask();
     }
 });
 
@@ -150,4 +157,3 @@ searchInput.addEventListener('keyup', (event) => {
     task.style.display = taskText.includes(searchTerm) ? 'flex' : 'none';
   });
 });
-
