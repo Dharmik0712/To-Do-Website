@@ -12,6 +12,10 @@ body{
   height: 100vh;
   overflow: hidden;
   transition: background 0.3s ease;
+  -webkit-transition: background 0.3s ease;
+  -moz-transition: background 0.3s ease;
+  -ms-transition: background 0.3s ease;
+  -o-transition: background 0.3s ease;
 }
 
 body.light-theme{
@@ -341,4 +345,17 @@ body.dark-theme .search-bar input {
   color: #fff;
   border: 1px solid #444;
 }
-
+#add-task-btn {
+  margin-top: 6px;
+  padding: 5px 20px;
+  background: #3C87FF;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+body.dark-theme #add-task-btn {
+  background: #444;
+  color: #fff;
+}
