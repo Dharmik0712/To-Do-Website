@@ -5,30 +5,30 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check for saved theme in localStorage
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
-      body.classList.add(savedTheme);
+        body.classList.add(savedTheme);
     }
 
     themeToggleBtn.addEventListener("click", () => {
-      if (body.classList.contains("light-theme")) {
-        body.classList.replace("light-theme", "dark-theme");
-        localStorage.setItem("theme", "dark-theme");
-      } else if (body.classList.contains("dark-theme")) {
-        body.classList.replace("dark-theme", "light-theme");
-        localStorage.setItem("theme", "light-theme");
-      } else {
-        // Default to light theme if no theme is currently set
-        body.classList.add("light-theme");
-        localStorage.setItem("theme", "light-theme");
-      }
+        if (body.classList.contains("light-theme")) {
+            body.classList.replace("light-theme", "dark-theme");
+            localStorage.setItem("theme", "dark-theme");
+        } else if (body.classList.contains("dark-theme")) {
+            body.classList.replace("dark-theme", "light-theme");
+            localStorage.setItem("theme", "light-theme");
+        } else {
+            // Default to light theme if no theme is currently set
+            body.classList.add("light-theme");
+            localStorage.setItem("theme", "light-theme");
+        }
     });
 });
 
 const taskInput = document.querySelector(".task-input input"),
-      priorityDropdown = document.querySelector(".priority-dropdown"),
-      addTaskBtn = document.getElementById("add-task-btn"),
-      filters = document.querySelectorAll(".filters span"),
-      clearAll = document.querySelector(".clear-btn"),
-      taskBox = document.querySelector(".task-box");
+    priorityDropdown = document.querySelector(".priority-dropdown"),
+    addTaskBtn = document.getElementById("add-task-btn"),
+    filters = document.querySelectorAll(".filters span"),
+    clearAll = document.querySelector(".clear-btn"),
+    taskBox = document.querySelector(".task-box");
 
 let editId,
     isEditTask = false,
@@ -38,7 +38,7 @@ filters.forEach(btn => {
     btn.addEventListener("click", () => {
         document.querySelector("span.active").classList.remove("active");
         btn.classList.add("active");
-        showTodo();
+        showTodo(btn.id);  // Pass the filter id (all, pending, completed)
     });
 });
 
@@ -130,6 +130,7 @@ function updateStatus(selectedTask) {
         todos[selectedTask.id].status = "pending";
     }
     localStorage.setItem("todo-list", JSON.stringify(todos));
+    showTodo(document.querySelector("span.active").id);  // Refresh with the current filter
 }
 
 clearAll.addEventListener("click", () => {
@@ -151,11 +152,11 @@ const searchInput = document.getElementById('search-input');
 const taskList = document.querySelector('.task-box');
 
 searchInput.addEventListener('keyup', (event) => {
-  const searchTerm = event.target.value.toLowerCase();
-  const tasks = taskList.querySelectorAll('.task');
+    const searchTerm = event.target.value.toLowerCase();
+    const tasks = taskList.querySelectorAll('.task');
 
-  tasks.forEach(task => {
-    const taskText = task.querySelector('p').textContent.toLowerCase();
-    task.style.display = taskText.includes(searchTerm) ? 'flex' : 'none';
-  });
+    tasks.forEach(task => {
+        const taskText = task.querySelector('p').textContent.toLowerCase();
+        task.style.display = taskText.includes(searchTerm) ? 'flex' : 'none';
+    });
 });
