@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
     const themeToggleBtn = document.getElementById("theme-toggle-btn");
     const body = document.body;
-  
+
     // Check for saved theme in localStorage
     const savedTheme = localStorage.getItem("theme");
     if (savedTheme) {
       body.classList.add(savedTheme);
     }
-  
+
     themeToggleBtn.addEventListener("click", () => {
       if (body.classList.contains("light-theme")) {
         body.classList.replace("light-theme", "dark-theme");
@@ -32,7 +32,7 @@ const taskInput = document.querySelector(".task-input input"),
 
 let editId,
     isEditTask = false,
-    todos = JSON.parse(localStorage.getItem("todo-list"));
+    todos = JSON.parse(localStorage.getItem("todo-list")) || [];
 
 filters.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -42,7 +42,7 @@ filters.forEach(btn => {
     });
 });
 
-function showTodo() {
+function showTodo(filter = "all") {
     let liTag = "";
     if (todos) {
         const priorityOrder = { "high": 1, "medium": 2, "low": 3, "no priority": 4 };
@@ -50,20 +50,22 @@ function showTodo() {
 
         todos.forEach((todo, id) => {
             let completed = todo.status === "completed" ? "checked" : "";
-            liTag += `<li class="task">
-                        <label for="${id}">
-                            <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
-                            <p class="${completed}">${todo.name}</p>
-                        </label>
-                        <div class="settings">
-                            <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
-                            <ul class="task-menu">
-                                <li onclick='editTask(${id}, "${todo.name}", "${todo.priority}")'><i class="uil uil-pen"></i>Edit</li>
-                                <li onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</li>
-                            </ul>
-                        </div>
-                        <span class="priority">${todo.priority.toUpperCase()}</span>
-                    </li>`;
+            if (filter === todo.status || filter === "all") {
+                liTag += `<li class="task">
+                            <label for="${id}">
+                                <input onclick="updateStatus(this)" type="checkbox" id="${id}" ${completed}>
+                                <p class="${completed}">${todo.name}</p>
+                            </label>
+                            <div class="settings">
+                                <i onclick="showMenu(this)" class="uil uil-ellipsis-h"></i>
+                                <ul class="task-menu">
+                                    <li onclick='editTask(${id}, "${todo.name}", "${todo.priority}")'><i class="uil uil-pen"></i>Edit</li>
+                                    <li onclick='deleteTask(${id})'><i class="uil uil-trash"></i>Delete</li>
+                                </ul>
+                            </div>
+                            <span class="priority">${todo.priority.toUpperCase()}</span>
+                        </li>`;
+            }
         });
     }
     taskBox.innerHTML = liTag || `<span>You don't have any task here</span>`;
@@ -101,6 +103,7 @@ function addTask() {
         showTodo();
     }
 }
+
 function editTask(taskId, textName, priority) {
     editId = taskId;
     isEditTask = true;
@@ -117,31 +120,24 @@ function deleteTask(deleteId) {
     showTodo();
 }
 
+function updateStatus(selectedTask) {
+    let taskName = selectedTask.nextElementSibling;
+    if (selectedTask.checked) {
+        taskName.classList.add("checked");
+        todos[selectedTask.id].status = "completed";
+    } else {
+        taskName.classList.remove("checked");
+        todos[selectedTask.id].status = "pending";
+    }
+    localStorage.setItem("todo-list", JSON.stringify(todos));
+}
+
 clearAll.addEventListener("click", () => {
     isEditTask = false;
     todos.splice(0, todos.length);
     localStorage.setItem("todo-list", JSON.stringify(todos));
     showTodo();
 });
-
-function addTask() {
-    let userTask = taskInput.value.trim();
-    let taskPriority = priorityDropdown.value;
-    if (userTask) {
-        if (!isEditTask) {
-            todos = !todos ? [] : todos;
-            let taskInfo = { name: userTask, status: "pending", priority: taskPriority };
-            todos.push(taskInfo);
-        } else {
-            isEditTask = false;
-            todos[editId].name = userTask;
-            todos[editId].priority = taskPriority;
-        }
-        taskInput.value = "";
-        localStorage.setItem("todo-list", JSON.stringify(todos));
-        showTodo();
-    }
-}
 
 addTaskBtn.addEventListener("click", addTask);
 
