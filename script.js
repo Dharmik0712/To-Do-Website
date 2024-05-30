@@ -83,18 +83,24 @@ function showMenu(selectedTask) {
     });
 }
 
-function updateStatus(selectedTask) {
-    let taskName = selectedTask.parentElement.lastElementChild;
-    if (selectedTask.checked) {
-        taskName.classList.add("checked");
-        todos[selectedTask.id].status = "completed";
-    } else {
-        taskName.classList.remove("checked");
-        todos[selectedTask.id].status = "pending";
+function addTask() {
+    let userTask = taskInput.value.trim();
+    let taskPriority = priorityDropdown.value;
+    if (userTask) {
+        if (!isEditTask) {
+            todos = !todos ? [] : todos;
+            let taskInfo = { name: userTask, status: "pending", priority: taskPriority };
+            todos.push(taskInfo);
+        } else {
+            isEditTask = false;
+            todos[editId].name = userTask;
+            todos[editId].priority = taskPriority;
+        }
+        taskInput.value = "";
+        localStorage.setItem("todo-list", JSON.stringify(todos));
+        showTodo();
     }
-    localStorage.setItem("todo-list", JSON.stringify(todos));
 }
-
 function editTask(taskId, textName, priority) {
     editId = taskId;
     isEditTask = true;
